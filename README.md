@@ -28,8 +28,17 @@ O projeto foi refatorado aplicando o princípio de Responsabilidade Única (SRP)
 * **Front-End:** HTML5, CSS3 (Grid/Flexbox), JavaScript Vanilla
 * **Integrações:** API REST Telegram, Protocolo SNMP (UDP porta 161)
 
-## 📸 Demonstração do Dashboard
-> **Nota do Desenvolvedor:** *Adicione aqui fotos da tela do seu sistema rodando (lembre-se de borrar os IPs reais caso apareçam nas fotos).*
 
+## 📸 Demonstração do Sistema
+
+Aqui está o Dashboard em funcionamento no ambiente de produção, monitorando os alertas e o estoque virtual (MRP):
+
+<img src="docs/pagina_principal.png" width="100%">
+...
+
+### 🗄️ Estrutura do Banco de Dados (SQLite)
+Abaixo, a modelagem de dados utilizada para armazenar o histórico de leituras e calcular o consumo preditivo através de IA:
+
+<img src="docs/bancode_dados.png" width="80%">
 ---
 Desenvolvido com ☕ e foco em automação de processos.

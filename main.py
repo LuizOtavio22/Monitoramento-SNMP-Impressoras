@@ -2,13 +2,11 @@ import webbrowser
 import os
 import asyncio
 import requests
-from datetime import datetime, timedelta
-
-
+from services.snmp_service import SNMPService
+from models.database_manager import DatabaseManager
+from views.dashboard_view import DashboardView
+from datetime import datetime
 import config
-from snmp_service import SNMPService
-from database_manager import DatabaseManager
-from dashboard_view import DashboardView
 
 
 def enviar_telegram(mensagem):
