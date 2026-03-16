@@ -28,8 +28,13 @@ O projeto foi refatorado aplicando o princípio de Responsabilidade Única (SRP)
 * Front-End: HTML5, CSS3 (Grid/Flexbox), JavaScript Vanilla
 * Integrações: API REST Telegram, Protocolo SNMP (UDP porta 161)
 
-## 📸 Demonstração do Dashboard
-> **Nota do Desenvolvedor:** *Adicione aqui fotos da tela do seu sistema rodando (lembre-se de borrar os IPs reais caso apareçam nas fotos).*
+## 📷 Demonstração do Dashboard
+
+### Painel Principal (Visão Geral)
+![Painel Principal](docs/pagina_principal.png)
+
+### Modelagem do Banco de Dados (SQLite)
+![Estrutura do Banco](docs/bancode_dados.png)
 
 ---
 Desenvolvido com ☕ e foco em automação de processos.
