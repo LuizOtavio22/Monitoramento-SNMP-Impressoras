@@ -31,9 +31,16 @@ O projeto foi refatorado aplicando o princípio de Responsabilidade Única (SRP)
 ## 📷 Demonstração do Dashboard
 
 ### Painel Principal (Visão Geral)
-![Painel Principal](docs/pagina1.png)
+### Painel Principal (Visão Geral e Detalhes)
+<p align="center">
+  <img src="docs/pagina1.png" alt="Visão Geral do Dashboard" width="48%" />
+  <img src="docs/pagina2.png" alt="Detalhes da Telemetria SNMP" width="48%" />
+</p>
+ 
 
-### Modelagem do Banco de Dados (SQLite)
-![Estrutura do Banco](docs/pagina2.png)
+ ### 🗄️ Modelagem do Banco de Dados (SQLite)
 
----
+<p align="center">
+  <img src="docs/bancoDe_Dados.png" alt="Estrutura do Banco de Dados" width="80%" />
+</p> 
+
