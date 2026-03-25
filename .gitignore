@@ -3,3 +3,5 @@ __pycache__/
 .env
 .vscode/
 venv/
+dashboard_impressoras.html
+foto_linkedin.html
