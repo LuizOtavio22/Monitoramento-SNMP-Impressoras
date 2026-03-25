@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime
 
 class DatabaseManager:
-    def __init__(self, nome_banco='historico_cimed.db'):
+    def __init__(self, nome_banco='historico.db'):
         self.nome_banco = nome_banco
         self._criar_tabelas()
 

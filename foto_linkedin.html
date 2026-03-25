@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Inteligente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f2f5; --card-bg: #ffffff; --primary: #0056b3; 
+            --text-main: #333; --text-muted: #6c757d; --border: #dee2e6;
+            --success: #28a745; --warning: #ffc107; --danger: #dc3545; --info: #17a2b8;
+            --purple: #6f42c1; --orange: #fd7e14;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 2rem; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; background: var(--card-bg); padding: 1.5rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .header h1 { color: var(--primary); font-size: 1.8rem; }
+        
+        .painel-box { background: var(--card-bg); padding: 1.5rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+        .painel-estoque { border-left: 6px solid var(--info); }
+        .painel-compras { border-left: 6px solid #6f42c1; }
+        .painel-hoje { border-left: 6px solid var(--danger); }
+        .painel-semana { border-left: 6px solid var(--orange); }
+        
+        .painel-box h2 { font-size: 1.3rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .painel-estoque h2 { color: var(--info); }
+        .painel-compras h2 { color: #6f42c1; }
+        .painel-hoje h2 { color: var(--danger); }
+        .painel-semana h2 { color: var(--orange); }
+        
+        .lista-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 15px; list-style: none; }
+        .card-item { padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #f8f9fa; font-weight: 600; font-size: 0.95rem; cursor: pointer; position: relative; }
+        .card-item.urgente { border-color: var(--danger); background: #fff5f5; color: var(--danger); }
+        .card-item.alerta-semana { border-color: var(--orange); background: #fff8f0; color: var(--orange); }
+        
+        .card-detalhes { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.15); font-weight: normal; font-size: 0.85rem; color: #555; list-style-type: none; }
+        .card-detalhes li { padding: 4px 0; }
+        
+        .controls-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .filter-group { display: flex; gap: 10px; }
+        .filter-btn { border: 1px solid var(--border); background: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; color: var(--text-muted); }
+        .filter-btn.active-all { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .search-box input { padding: 10px 15px; width: 300px; border: 1px solid var(--border); border-radius: 20px; outline: none; font-size: 1rem; }
+        
+        .table-container { background: var(--card-bg); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        thead { background-color: var(--primary); color: white; }
+        th, td { padding: 15px; border-bottom: 1px solid var(--border); }
+        
+        .ip-serial { font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 3px; }
+        .icon-arrow { font-size: 0.8rem; color: var(--primary); font-weight: bold; }
+        
+        .sub-table { margin: 0; width: 100%; box-shadow: inset 0 3px 6px rgba(0,0,0,0.05); }
+        .sub-table th { background-color: #e9ecef; color: #495057; font-size: 0.85rem; padding: 10px 15px; }
+        .sub-table td { border-bottom: 1px solid #e0e0e0; padding: 10px 15px; font-size: 0.95rem; }
+
+        .progress-bg { width: 100%; background-color: #e9ecef; border-radius: 10px; height: 12px; margin-top: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; border-radius: 10px; transition: width 0.5s; }
+        .bg-success { background-color: var(--success); }
+        .bg-warning { background-color: var(--warning); }
+        .bg-danger { background-color: var(--danger); }
+        .bg-purple { background-color: var(--purple); } 
+        
+        .badge { padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; color: white; display: inline-block; min-width: 80px; text-align: center; }
+        
+        .previsao-box { background: #e3f2fd; border-left: 4px solid var(--info); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem; display: inline-block; }
+        .previsao-box.urgente { background: #fde8e8; border-left: 4px solid var(--danger); color: var(--danger); font-weight: bold; }
+        .previsao-box.zumbi { background: #f3e8fd; border-left: 4px solid var(--purple); color: var(--purple); font-weight: bold; }
+        .previsao-box.semana { background: #fff8f0; border-left: 4px solid var(--orange); color: var(--orange); font-weight: bold; }
+        
+        .cor-black { color: #000; font-weight: 600; }
+        .cor-magenta { color: #e91e63; font-weight: 600; }
+        
+        .historico-troca { display: block; font-size: 0.75rem; color: #888; margin-top: 4px; font-weight: normal; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>🖨️ Gestão Inteligente de Impressoras</h1>
+            <p>Última sincronização: Hoje às 09:15:00 | IA Preditiva + Baixa Automática de Estoque</p>
+        </div>
+    </div>
+
+    <div class="painel-box painel-estoque">
+        <h2>📦 Seu Armário (Estoque Físico Atual)</h2>
+        <ul class="lista-cards">
+            <li class='card-item' style='border-color: var(--info);'>🖨️ Lexmark M5270<br>
+                <ul style='margin-top:5px; font-weight:normal; font-size:0.9rem; list-style-type:none;'>
+                    <li>Toner Preto: <strong>12 un</strong></li>
+                    <li>Unidade de Imagem (Cilindro): <strong>3 un</strong></li>
+                </ul>
+            </li>
+            <li class='card-item' style='border-color: var(--info);'>🖨️ Epson Grande<br>
+                <ul style='margin-top:5px; font-weight:normal; font-size:0.9rem; list-style-type:none;'>
+                    <li>Tinta Magenta (Rosa): <strong>4 un</strong></li>
+                    <li>Caixa de Manutenção: <strong>6 un</strong></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="painel-box painel-compras">
+        <h2>🛒 Assistente de Compras (MRP)</h2>
+        <ul class="lista-cards">
+            <li class='card-item urgente'>🚨 Faltam 2x Toner Preto<br>
+                <small>Lexmark 1246 (Estoque: 0 | Demanda: 2)</small>
+                <ul class='card-detalhes' style='display: block;'>
+                    <li>▸ Comercial (Nível: 2%)</li>
+                    <li>▸ Diretoria (Nível: 5%)</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="painel-box painel-hoje">
+        <h2>🚨 Ação Imediata: Fim de Vida HOJE ou Overlife!</h2>
+        <ul class="lista-cards">
+            <li class='card-item urgente' style='border-color: var(--purple); color: var(--purple); background: #f3e8fd;'>🧟 Qualidade e Testes <br>
+                <small>Risco de Quebra: Unidade de Imagem rodando a 115%!</small>
+            </li>
+            <li class='card-item urgente'>🔥 Comercial <br>
+                <small>Peça: Toner Preto (Restam ~500 fls)</small>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="painel-box painel-semana">
+        <h2>🗓️ Previsão para esta Semana (Próximos 7 dias)</h2>
+        <ul class="lista-cards">
+            <li class='card-item alerta-semana'>📅 RH - Recrutamento <br>
+                <small>Peça: Tinta Magenta (Rosa) <br><b>Zera dia: 28/03/2026</b></small>
+                <ul class='card-detalhes' style='display: block;'>
+                    <li>📊 Nível Atual: <strong>18%</strong></li>
+                    <li>🖨️ Média Setor: <strong>210 pág/dia</strong></li>
+                    <li style='margin-top: 5px; color: #d35400;'><strong>Dupla Validação de Fim de Vida:</strong></li>
+                    <li>✔️ Validação 1 (Ritmo Normal): <strong>28/03/2026</strong></li>
+                    <li>⚠️ Validação 2 (Pior Cenário): <strong>26/03/2026</strong></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="controls-container">
+        <div class="filter-group">
+            <button class="filter-btn active-all">🗂️ Ver Todas</button>
+            <button class="filter-btn">✅ Tudo OK</button>
+            <button class="filter-btn">⚠️ Em Atenção</button>
+            <button class="filter-btn">🚨 Crítico</button>
+            <button class="filter-btn">🧟 Overlife (100%+)</button>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="🔍 Buscar setor, IP ou modelo...">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table id="printerTable">
+            <thead>
+                <tr>
+                    <th>Localização</th>
+                    <th>Equipamento</th>
+                    <th>Status Geral</th>
+                    <th style="text-align: right;">Detalhes Preditivos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-left: 5px solid var(--purple);">
+                    <td><strong>Qualidade e Testes</strong></td>
+                    <td>Konica <br> <span class='ip-serial'>IP: 192.168.0.13 | SN: KON112233</span></td>
+                    <td><span class='badge' style='background: var(--purple);'>Overlife 100%+</span></td>
+                    <td style="text-align: right;"><span class="icon-arrow" style="color: var(--purple);">FECHAR ANÁLISE ▲</span></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="padding: 0; background-color: #f8f9fa;">
+                        <table class="sub-table">
+                            <thead><tr><th>Suprimento</th><th>Nível Atual</th><th>Folhas Restantes</th><th>Média Setor</th><th>Previsão IA</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td class="cor-black" style="width: 25%;">Unidade de Imagem</td>
+                                    <td style="width: 30%;">115% (Uso Extremo)<div class="progress-bg"><div class="progress-bar bg-purple" style="width: 100%;"></div></div></td>
+                                    <td style="width: 15%;">-18.000 fls</td>
+                                    <td style="width: 15%; color: var(--primary);"><strong>400</strong> pág/dia</td>
+                                    <td style="width: 15%;"><div class="previsao-box zumbi">Quebra Iminente</div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr style="border-left: 5px solid var(--success);">
+                    <td><strong>Diretoria Executiva</strong></td>
+                    <td>Lexmark M5270 <br> <span class='ip-serial'>IP: 192.168.0.12 | SN: LEX7014169</span></td>
+                    <td><span class='badge' style='background: var(--success);'>Tudo OK</span></td>
+                    <td style="text-align: right;"><span class="icon-arrow">VER ANÁLISE ▼</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
