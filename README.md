@@ -31,10 +31,9 @@ O projeto foi refatorado aplicando o princípio de Responsabilidade Única (SRP)
 ## 📷 Demonstração do Dashboard
 
 ### Painel Principal (Visão Geral)
-![Painel Principal](docs/pagina_principal.png)
+![Painel Principal](docs/pagina1.png)
 
 ### Modelagem do Banco de Dados (SQLite)
-![Estrutura do Banco](docs/bancode_dados.png)
+![Estrutura do Banco](docs/pagina2.png)
 
 ---
-Desenvolvido com ☕ e foco em automação de processos.
