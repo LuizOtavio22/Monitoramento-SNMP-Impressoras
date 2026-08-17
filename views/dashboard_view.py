@@ -1,0 +1,130 @@
+# dashboard_view.py
+# Módulo responsável por renderizar a interface de usuário (HTML/CSS/JS)
+
+class DashboardView:
+    @staticmethod
+    def gerar_html(linhas_tabela, painel_compras, painel_hoje, data_hora):
+        conteudo = f"""
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>ERP SmartPrint - Portfólio</title>
+            <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+            <style>
+                :root {{
+                    --bg-color: #f0f2f5; --card-bg: #ffffff; --primary: #0056b3; 
+                    --text-main: #333; --text-muted: #6c757d; --border: #dee2e6;
+                    --success: #28a745; --warning: #ffc107; --danger: #dc3545; --info: #17a2b8;
+                    --purple: #6f42c1; 
+                }}
+                * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }}
+                body {{ background-color: var(--bg-color); color: var(--text-main); padding: 2rem; }}
+                
+                .header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; background: var(--card-bg); padding: 1.5rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }}
+                .header h1 {{ color: var(--primary); font-size: 1.8rem; }}
+                
+                .painel-box {{ background: var(--card-bg); padding: 1.5rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }}
+                .painel-compras {{ border-left: 6px solid #6f42c1; }}
+                .painel-hoje {{ border-left: 6px solid var(--danger); }}
+                .painel-box h2 {{ font-size: 1.3rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }}
+                .painel-compras h2 {{ color: #6f42c1; }}
+                .painel-hoje h2 {{ color: var(--danger); }}
+                
+                .lista-cards {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 15px; list-style: none; }}
+                .card-item {{ padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #f8f9fa; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; position: relative; }}
+                .card-item:hover {{ filter: brightness(0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
+                
+                .controls-container {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }}
+                .filter-group {{ display: flex; gap: 10px; }}
+                .filter-btn {{ border: 1px solid var(--border); background: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all 0.3s; }}
+                .filter-btn:hover {{ background: #f8f9fa; }}
+                .filter-btn.active-all {{ background: var(--primary); color: white; border-color: var(--primary); }}
+                .filter-btn.active-success {{ background: var(--success); color: white; border-color: var(--success); }}
+                .filter-btn.active-warning {{ background: var(--warning); color: #000; border-color: var(--warning); }}
+                .filter-btn.active-danger {{ background: var(--danger); color: white; border-color: var(--danger); }}
+                .filter-btn.active-zumbi {{ background: var(--purple); color: white; border-color: var(--purple); }}
+                
+                .search-box input {{ padding: 10px 15px; width: 300px; border: 1px solid var(--border); border-radius: 20px; outline: none; font-size: 1rem; }}
+                
+                .table-container {{ background: var(--card-bg); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }}
+                table {{ width: 100%; border-collapse: collapse; text-align: left; }}
+                thead {{ background-color: var(--primary); color: white; }}
+                th, td {{ padding: 15px; border-bottom: 1px solid var(--border); }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <div>
+                    <h1>🖨️ ERP Inteligente - Gestão de Impressoras</h1>
+                    <p>Última sincronização: {data_hora} | IA Preditiva + Baixa Automática de Estoque</p>
+                </div>
+            </div>
+
+            <div class="painel-box painel-compras">
+                <h2>🛒 Assistente de Compras (MRP)</h2>
+                <ul class="lista-cards">{painel_compras}</ul>
+            </div>
+
+            <div class="painel-box painel-hoje">
+                <h2>🚨 Ação Imediata: Fim de Vida HOJE ou Overlife!</h2>
+                <ul class="lista-cards">{painel_hoje}</ul>
+            </div>
+
+            <div class="controls-container">
+                <div class="filter-group">
+                    <button class="filter-btn active-all" onclick="filtrarTabela('all', this)">🗂️ Ver Todas</button>
+                    <button class="filter-btn" onclick="filtrarTabela('success', this)">✅ Tudo OK</button>
+                    <button class="filter-btn" onclick="filtrarTabela('warning', this)">⚠️ Em Atenção</button>
+                    <button class="filter-btn" onclick="filtrarTabela('danger', this)">🚨 Crítico</button>
+                    <button class="filter-btn" onclick="filtrarTabela('zumbi', this)">🧟 Overlife (100%+)</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 Buscar setor, IP ou modelo...">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="printerTable">
+                    <thead><tr><th>Localização</th><th>Equipamento</th><th>Status Geral</th><th style="text-align: right;">Detalhes Preditivos</th></tr></thead>
+                    <tbody id="tableBody">{linhas_tabela}</tbody>
+                </table>
+            </div>
+
+            <script>
+                function toggleDetail(id) {{
+                    var detailRow = document.getElementById(id);
+                    detailRow.style.display = detailRow.style.display === "none" ? "table-row" : "none";
+                }}
+                function toggleCard(id) {{
+                    var detailList = document.getElementById(id);
+                    if(detailList) detailList.style.display = detailList.style.display === "none" ? "block" : "none";
+                }}
+                function filtrarTabela(status, btnElement) {{
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.className = "filter-btn");
+                    btnElement.classList.add('active-' + status);
+                    document.querySelectorAll('.printer-row').forEach(row => {{
+                        let rowStatus = row.getAttribute('data-status');
+                        let targetId = row.getAttribute('onclick').match(/'([^']+)'/)[1];
+                        let detailRow = document.getElementById(targetId);
+                        if (status === 'all' || rowStatus === status) {{ row.style.display = ''; }} 
+                        else {{ row.style.display = 'none'; detailRow.style.display = 'none'; }}
+                    }});
+                }}
+                document.getElementById('searchInput').addEventListener('keyup', function() {{
+                    let filter = this.value.toLowerCase();
+                    document.querySelectorAll('.printer-row').forEach(row => {{
+                        let text = row.innerText.toLowerCase();
+                        let targetId = row.getAttribute('onclick').match(/'([^']+)'/)[1];
+                        let detailRow = document.getElementById(targetId);
+                        if(text.includes(filter)) {{ row.style.display = ''; }} 
+                        else {{ row.style.display = 'none'; detailRow.style.display = 'none'; }}
+                    }});
+                }});
+            </script>
+        </body>
+        </html>
+        """
+        with open("dashboard_impressoras.html", "w", encoding="utf-8") as ficheiro:
+            ficheiro.write(conteudo)
